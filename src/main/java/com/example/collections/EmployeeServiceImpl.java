@@ -12,8 +12,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         employees = new LinkedHashMap<>();
     }
 
-    public Employee add(String firstName, String lastName) {
-        Employee employee = new Employee(firstName, lastName);
+    public Employee add(String firstName, String lastName,int salary,int departmentId) {
+        Employee employee = new Employee(firstName, lastName,salary,departmentId);
         String key = createKey(firstName, lastName);
         if (employees.containsKey(key)) {
             throw new EmployeeNotExistsException();
@@ -36,8 +36,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee find(String firstName, String lastName) {
         Employee employee = new Employee(firstName, lastName);
         String key = createKey(firstName, lastName);
-        Employee show = employees.get(key);
-        if (show == null) {
+        Employee targetEmployee = employees.get(key);
+        if (targetEmployee == null) {
             throw new EmployeeNotExistsException();
         }
         return employee;
@@ -49,7 +49,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Collection<Employee> getAll() {
-        return employees.values();
+        return Set.copyOf(employees.values());
     }
 
 }
