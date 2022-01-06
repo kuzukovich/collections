@@ -1,7 +1,9 @@
 package com.example.collections;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
 import java.util.*;
 
 @Service
@@ -12,9 +14,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         employees = new LinkedHashMap<>();
     }
 
-    public Employee add(String firstName, String lastName,int salary,int departmentId) {
-        Employee employee = new Employee(firstName, lastName,salary,departmentId);
-        String key = createKey(firstName, lastName);
+    public Employee add(String firstName, String lastName, int salary, int departmentId) {
+        checkFirstName(firstName);
+        checkLastName(lastName);
+        Employee employee = new Employee(UpFirstName(firstName), UpLastName(lastName), salary, departmentId);
+        String key = createKey(UpFirstName(firstName), UpLastName(lastName));
         if (employees.containsKey(key)) {
             throw new EmployeeNotExistsException();
         }
@@ -45,6 +49,26 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private String createKey(String firstName, String lastName) {
         return firstName + lastName;
+    }
+
+    private String checkFirstName(String firstName) {
+        if (StringUtils.isAlpha(firstName)) {
+            return firstName;
+        } else throw new EmployeeNotExistsException();
+    }
+
+    private String checkLastName(String lastName) {
+        if (StringUtils.isAlpha(lastName)) {
+            return lastName;
+        } else throw new EmployeeNotExistsException();
+    }
+
+    private String UpFirstName(String firstName) {
+        return StringUtils.capitalize(firstName);
+    }
+
+    private String UpLastName(String lastName) {
+        return StringUtils.capitalize(lastName);
     }
 
     @Override
