@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.*;
 
+import static org.apache.commons.lang3.StringUtils.*;
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     private final Map<String, Employee> employees;
@@ -17,8 +19,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee add(String firstName, String lastName, int salary, int departmentId) {
         checkFirstName(firstName);
         checkLastName(lastName);
-        Employee employee = new Employee(UpFirstName(firstName), UpLastName(lastName), salary, departmentId);
-        String key = createKey(UpFirstName(firstName), UpLastName(lastName));
+        Employee employee = new Employee(upFirstName(firstName), upLastName(lastName), salary, departmentId);
+        String key = createKey(upFirstName(firstName), upLastName(lastName));
         if (employees.containsKey(key)) {
             throw new EmployeeNotExistsException();
         }
@@ -42,7 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         String key = createKey(firstName, lastName);
         Employee targetEmployee = employees.get(key);
         if (targetEmployee == null) {
-            throw new EmployeeNotExistsException();
+            throw new EmployeeNotFoundException();
         }
         return employee;
     }
@@ -52,23 +54,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private String checkFirstName(String firstName) {
-        if (StringUtils.isAlpha(firstName)) {
+        if (isAlpha(firstName)) {
             return firstName;
-        } else throw new EmployeeNotExistsException();
+        } else throw new EmployeeInvalidException();
     }
 
     private String checkLastName(String lastName) {
-        if (StringUtils.isAlpha(lastName)) {
+        if (isAlpha(lastName)) {
             return lastName;
-        } else throw new EmployeeNotExistsException();
+        } else throw new EmployeeInvalidException();
     }
 
-    private String UpFirstName(String firstName) {
-        return StringUtils.capitalize(firstName);
+    private String upFirstName(String firstName) {
+        return capitalize(firstName);
     }
 
-    private String UpLastName(String lastName) {
-        return StringUtils.capitalize(lastName);
+    private String upLastName(String lastName) {
+        return capitalize(lastName);
     }
 
     @Override
